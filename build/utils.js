@@ -3,6 +3,7 @@ const path = require('path')
 const config = require('../config')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const packageConfig = require('../package.json')
+const glob = require('glob')
 
 exports.assetsPath = function (_path) {
   const assetsSubDirectory = process.env.NODE_ENV === 'production'
@@ -98,4 +99,19 @@ exports.createNotifierCallback = () => {
       icon: path.join(__dirname, 'logo.png')
     })
   }
+}
+
+/**
+ * 利用glob构建多页面入口
+ * 以'./src/pages/register/set-pwd/index.js'为例
+ * entryArr[3]和entryArr[4]分别为模块名和页面名
+ */
+exports.getMultiEntry = function (globPath) {
+  var entries = {}, entryArr, pathname;
+  glob.sync(globPath).forEach(function (entry) {
+    entryArr = entry.split('/')
+    pathname = entryArr[3] + '/' + entryArr[4]
+    entries[pathname] = entry
+  })
+  return entries
 }
