@@ -46,10 +46,22 @@ exports.cssLoaders = function (options) {
     // Extract CSS when that option is specified
     // (which is the case during production build)
     if (options.extract) {
+      // var ExtractTextPlugins = []
+      // if (!Array.isArray(options.paths)) {
       return ExtractTextPlugin.extract({
         use: loaders,
         fallback: 'vue-style-loader'
       })
+      // }
+      // options.paths.forEach(function (path, index) {
+      //   ExtractTextPlugins.push(
+      //     options.extractTextPlugins[index].extract({
+      //       use: loaders,
+      //       fallback: 'vue-style-loader'
+      //     })
+      //   )
+      // })
+      // return ExtractTextPlugins
     } else {
       return ['vue-style-loader'].concat(loaders)
     }
@@ -110,7 +122,7 @@ exports.getMultiEntry = function (globPath) {
   var entries = {}, entryArr, pathname;
   glob.sync(globPath).forEach(function (entry) {
     entryArr = entry.split('/')
-    pathname = entryArr[3] + '/' + entryArr[4]
+    pathname = entryArr[3] + '/js/' + entryArr[4]
     entries[pathname] = entry
   })
   return entries

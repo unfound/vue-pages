@@ -16,20 +16,42 @@ const env = require('../config/prod.env')
 const getHtmls = function () {
   var pages = utils.getMultiEntry('./src/pages/**/index.js'), htmls = []
   for (var page in pages) {
-    var pageName = page.split('/')[1]
+    var pageName = page.split('/')[2]
+    var htmlPath = page.split('/')[0] + '/' + pageName
     var config = {
       title: pageName,
-      filename: page + pageName + '.html',
+      filename: htmlPath + '.html',
       template: 'index.html',
       inject: true,
-      chunks: ['vendor', 'manifest', 'vendor-async', page + pageName],
+      chunks: ['vendor', 'manifest', 'vendor-async', page],
       chunksSortMode: 'dependency'
     }
-    // console.log(config)
     htmls.push(new HtmlWebpackPlugin(config))
   }
   return htmls
 }
+
+// const getCssRules = function () {
+//   var pages = utils.getMultiEntry('./src/pages/**/index.js'), paths = [], rules = [], extractTextPlugins = []
+//   for (var page in pages) {
+//     var patharr = page.split('/')
+//     var pageName = patharr[2]
+//     var htmlPath = patharr[0] + '/' + pageName
+//     paths.push(htmlPath)
+//     extractTextPlugins.push(new ExtractTextPlugin({
+//       filename: patharr[0] + '/css/' + pageName + '.[contenthash].css',
+//       allChunks: true
+//     }))
+//     rules.push({
+//       test: new RegExp('\\.(css|sass)$'),
+//       use: extractTextPlugins[extractTextPlugins.length - 1].extract({
+//         fallback: 'style-loader',
+//         use: ['css-loader', 'postcss-loader', 'sass-loader']
+//       })
+//     })
+//   }
+//   return { rules, extractTextPlugins }
+// }
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -42,8 +64,8 @@ const webpackConfig = merge(baseWebpackConfig, {
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     path: config.build.assetsRoot,
-    filename: utils.assetsPath('js/[name].[chunkhash].js'),
-    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+    filename: utils.assetsPath('[name].[chunkhash].js'),
+    chunkFilename: utils.assetsPath('[id].[chunkhash].js')
   },
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
@@ -61,7 +83,9 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
     // extract css into its own file
     new ExtractTextPlugin({
-      filename: utils.assetsPath('css/[name].[contenthash].css'),
+      filename: function (getPath) {
+        return getPath(utils.assetsPath('[name].[contenthash].css')).replace('js', 'css')
+      },
       // Setting the following option to `false` will not extract CSS from codesplit chunks.
       // Their CSS will instead be inserted dynamically with style-loader when the codesplit chunk has been loaded by webpack.
       // It's currently set to `true` because we are seeing that sourcemaps are included in the codesplit bundle as well when it's `false`, 
@@ -137,6 +161,8 @@ const webpackConfig = merge(baseWebpackConfig, {
     ])
   ]
 })
+
+console.log(webpackConfig.module.rules)
 
 if (config.build.productionGzip) {
   const CompressionWebpackPlugin = require('compression-webpack-plugin')

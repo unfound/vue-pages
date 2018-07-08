@@ -6,8 +6,6 @@ const vueLoaderConfig = require('./vue-loader.conf')
 
 const entries = utils.getMultiEntry('./src/pages/**/index.js')
 
-console.log(entries)
-
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -25,9 +23,9 @@ const createLintingRule = () => ({
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
-  entry: {
-    app: './src/main.js'
-  },
+  // entry: {
+  //   app: './src/main.js'
+  // },
   entry: entries,
   output: {
     path: config.build.assetsRoot,
