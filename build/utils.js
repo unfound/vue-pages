@@ -46,22 +46,10 @@ exports.cssLoaders = function (options) {
     // Extract CSS when that option is specified
     // (which is the case during production build)
     if (options.extract) {
-      // var ExtractTextPlugins = []
-      // if (!Array.isArray(options.paths)) {
       return ExtractTextPlugin.extract({
         use: loaders,
         fallback: 'vue-style-loader'
       })
-      // }
-      // options.paths.forEach(function (path, index) {
-      //   ExtractTextPlugins.push(
-      //     options.extractTextPlugins[index].extract({
-      //       use: loaders,
-      //       fallback: 'vue-style-loader'
-      //     })
-      //   )
-      // })
-      // return ExtractTextPlugins
     } else {
       return ['vue-style-loader'].concat(loaders)
     }
@@ -117,12 +105,15 @@ exports.createNotifierCallback = () => {
  * 利用glob构建多页面入口
  * 以'./src/pages/register/set-pwd/index.js'为例
  * entryArr[3]和entryArr[4]分别为模块名和页面名
+ * 中间添加一个/js/层级是为了是对应的模块JS能够被打包到对应的文件加下
  */
 exports.getMultiEntry = function (globPath) {
-  var entries = {}, entryArr, pathname;
+  let entries = {}
+  let entryArr = []
+  let pathname = ''
   glob.sync(globPath).forEach(function (entry) {
     entryArr = entry.split('/')
-    pathname = entryArr[3] + '/js/' + entryArr[4]
+    pathname = entryArr[config.base.moduleName] + '/js/' + entryArr[config.base.pageName]
     entries[pathname] = entry
   })
   return entries

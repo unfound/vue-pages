@@ -13,6 +13,24 @@ const portfinder = require('portfinder')
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
+const getHtmls = function () {
+  const pages = utils.getMultiEntry(config.base.entries)
+  let htmls = []
+  for (let page in pages) {
+    const pageName = page.split('/')[2]
+    const htmlPath = page.split('/')[0] + '/' + pageName
+    const htmlConfig = {
+      title: pageName,
+      filename: htmlPath + '.html',
+      template: 'index.html',
+      inject: true,
+      excludeChunks: Object.keys(pages).filter(item => item != page)
+    }
+    htmls.push(new HtmlWebpackPlugin(htmlConfig))
+  }
+  return htmls
+}
+
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
@@ -52,11 +70,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
     new webpack.NoEmitOnErrorsPlugin(),
     // https://github.com/ampedandwired/html-webpack-plugin
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
-      inject: true
-    }),
+    ...getHtmls(),
     // copy custom static assets
     new CopyWebpackPlugin([
       {

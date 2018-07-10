@@ -14,11 +14,12 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const env = require('../config/prod.env')
 
 const getHtmls = function () {
-  var pages = utils.getMultiEntry('./src/pages/**/index.js'), htmls = []
-  for (var page in pages) {
-    var pageName = page.split('/')[2]
-    var htmlPath = page.split('/')[0] + '/' + pageName
-    var config = {
+  const pages = utils.getMultiEntry(config.base.entries)
+  let htmls = []
+  for (let page in pages) {
+    const pageName = page.split('/')[2]
+    const htmlPath = page.split('/')[0] + '/' + pageName
+    const htmlConfig = {
       title: pageName,
       filename: htmlPath + '.html',
       template: 'index.html',
@@ -26,32 +27,10 @@ const getHtmls = function () {
       chunks: ['vendor', 'manifest', 'vendor-async', page],
       chunksSortMode: 'dependency'
     }
-    htmls.push(new HtmlWebpackPlugin(config))
+    htmls.push(new HtmlWebpackPlugin(htmlConfig))
   }
   return htmls
 }
-
-// const getCssRules = function () {
-//   var pages = utils.getMultiEntry('./src/pages/**/index.js'), paths = [], rules = [], extractTextPlugins = []
-//   for (var page in pages) {
-//     var patharr = page.split('/')
-//     var pageName = patharr[2]
-//     var htmlPath = patharr[0] + '/' + pageName
-//     paths.push(htmlPath)
-//     extractTextPlugins.push(new ExtractTextPlugin({
-//       filename: patharr[0] + '/css/' + pageName + '.[contenthash].css',
-//       allChunks: true
-//     }))
-//     rules.push({
-//       test: new RegExp('\\.(css|sass)$'),
-//       use: extractTextPlugins[extractTextPlugins.length - 1].extract({
-//         fallback: 'style-loader',
-//         use: ['css-loader', 'postcss-loader', 'sass-loader']
-//       })
-//     })
-//   }
-//   return { rules, extractTextPlugins }
-// }
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {

@@ -1,5 +1,9 @@
 <template>
-  <div>set-pwd</div>
+  <div>
+    <div>set-pwd</div>
+    <div>{{num}}</div>
+    <button @click="test"> + 1 </button>
+  </div>
 </template>
 
 <style>
@@ -16,7 +20,22 @@ body {
 </style>
 
 <script>
+import { toFixed } from '@/assets/js/utils.js'
+
 export default {
-  name: 'set-pwd'
+  name: 'set-pwd',
+  data () {
+    return {
+      num: 0
+    }
+  },
+  methods: {
+    test () {
+      this.num++
+    }
+  },
+  mounted () {
+    console.log(toFixed('1.256'))
+  }
 }
 </script>
