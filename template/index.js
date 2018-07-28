@@ -1,10 +1,10 @@
 import Vue from 'vue'
-import <%= pageName %> from './<%= pageName %>.vue'
+import Main from './Main.vue'
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  render: h => h(<%= pageName %>)
+  render: h => h(Main)
 })
